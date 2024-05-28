@@ -115,7 +115,11 @@ def main(ctx, local, remote, project_name, cookie_path, sync_path, olignore_path
 
         sync = not (local or remote)
 
-        if remote or sync:
+        if remote or sync: # from local to Overleaf
+            
+            if os.path.exists("output.pdf"):
+                os.remove("output.pdf")
+            
             sync_func(
                 files_from=zip_file.namelist(),
                 deleted_files=[
@@ -136,7 +140,8 @@ def main(ctx, local, remote, project_name, cookie_path, sync_path, olignore_path
                 from_name="remote",
                 to_name="local",
                 verbose=verbose)
-        if local or sync:
+        
+        if local or sync: # from Overleaf to local
             sync_func(
                 files_from=olignore_keep_list(olignore_path),
                 deleted_files=[
@@ -158,6 +163,9 @@ def main(ctx, local, remote, project_name, cookie_path, sync_path, olignore_path
                 from_name="local",
                 to_name="remote",
                 verbose=verbose)
+    
+            if os.path.exists("output.pdf"):
+                os.remove("output.pdf")
 
 
 @main.command()
